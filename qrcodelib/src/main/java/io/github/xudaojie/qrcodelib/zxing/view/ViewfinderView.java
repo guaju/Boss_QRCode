@@ -77,7 +77,8 @@ public final class ViewfinderView extends View {
     private int cameraPermission = PackageManager.PERMISSION_DENIED;
     //为了让宽高一致，得到一个距离  --by guaju
     private int distance;
-
+    private int white_text_size;
+    boolean just_add_once=false;
     // This constructor is used when the class is built from an XML resource.
     public ViewfinderView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -105,6 +106,7 @@ public final class ViewfinderView extends View {
 
         // Initialize these once for performance rather than calling them every time in onDraw().
         paint = new Paint();
+        white_text_size = getResources().getDimensionPixelSize(R.dimen.white_top_textsize);
         Resources resources = getResources();
         maskColor = resources.getColor(R.color.viewfinder_mask);
         resultColor = resources.getColor(R.color.result_view);
@@ -168,8 +170,9 @@ public final class ViewfinderView extends View {
             //change  by  guaju
             distance = frame.right - frame.left;
             //保证只执行一次
-            if (translateY==5){
-            translateY=675f-distance;
+            if (!just_add_once){
+             translateY=675f-distance;
+             just_add_once=true;
             }
 
             canvas.drawRect(frame.left, frame.bottom- distance, frame.right + 1, frame.bottom- distance + 2, paint);
@@ -236,14 +239,14 @@ public final class ViewfinderView extends View {
     private void drawText(Canvas canvas, Rect frame) {
         if (cameraPermission == PackageManager.PERMISSION_GRANTED) {
             paint.setColor(hintColor);
-            paint.setTextSize(36);
+            paint.setTextSize(getResources().getDimensionPixelSize(R.dimen.white_top_textsize));
             String text = hint;
-            canvas.drawText(hint, frame.centerX() - text.length() * 36 / 2, frame.bottom + 35 + 20, paint);
+            canvas.drawText(hint, frame.centerX() - text.length() * white_text_size / 2, frame.bottom + white_text_size + 20, paint);
         } else {
             paint.setColor(errorHintColor);
-            paint.setTextSize(36);
+            paint.setTextSize(white_text_size);
             String text = errorHint;
-            canvas.drawText(errorHint, frame.centerX() - text.length() * 36 / 2, frame.bottom + 35 + 20, paint);
+            canvas.drawText(errorHint, frame.centerX() - text.length() * white_text_size / 2, frame.bottom + white_text_size + 20, paint);
         }
     }
 
@@ -251,16 +254,18 @@ public final class ViewfinderView extends View {
     private void drawTopText(Canvas canvas, Rect frame) {
         Paint paintTopWhite=paint;
         paintTopWhite.setColor(hintColor);
-        paintTopWhite.setTextSize(36);
+
+        paintTopWhite.setTextSize(white_text_size);
         String text1="在电脑浏览器打开";
         String text3="并扫描页面中的二维码登录网页版操作";
-        canvas.drawText(text1, frame.centerX() - text1.length() * 36 / 2, frame.top , paintTopWhite);
-        canvas.drawText(text3, frame.centerX() - text3.length() * 36 / 2, frame.top +2*(36+15), paintTopWhite);
+        canvas.drawText(text1, frame.centerX() - text1.length() * white_text_size / 2, frame.bottom-distance-2*(white_text_size+15) , paintTopWhite);
+        canvas.drawText(text3, frame.centerX() - text3.length() * white_text_size / 2, frame.bottom-distance -15, paintTopWhite);
         Paint paintTopBossGreen=paint;
         paintTopBossGreen.setColor(getResources().getColor(R.color.boss_green));
-        paintTopBossGreen.setTextSize(50);
+        int boss_green_text_size = getResources().getDimensionPixelSize(R.dimen.boss_green_top_textsize);
+        paintTopBossGreen.setTextSize(boss_green_text_size);
         String text2="sao.zhipin.com";
-        canvas.drawText(text2, frame.centerX() - text2.length() * 50/4, frame.top + 36+15, paintTopBossGreen);
+        canvas.drawText(text2, frame.centerX() - text2.length() * boss_green_text_size/4, frame.bottom-distance - white_text_size -15, paintTopBossGreen);
 
 
 

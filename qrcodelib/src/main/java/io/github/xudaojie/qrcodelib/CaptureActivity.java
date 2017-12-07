@@ -418,4 +418,9 @@ public class CaptureActivity extends Activity implements Callback {
         }
     };
 
+
+    //设置顶部的三行字
+    public  void  setText(String whiteText1,String bossGreenText,String whiteText2){
+
+    }
 }
